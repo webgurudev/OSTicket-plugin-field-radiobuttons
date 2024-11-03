@@ -217,7 +217,7 @@ class RadioField extends FormField {
 }
 
 class RadioWidget extends Widget {
-    
+
     function render($options=array()) {
 
         $config = $this->field->getConfiguration();
@@ -246,7 +246,7 @@ class RadioWidget extends Widget {
 
         if (isset($config['classes']))
             $classes = 'class="'.$config['classes'].'"';
-        
+
         $this->emitChoices($choices, $values, $have_def, $def_key);
     }
 
@@ -297,9 +297,18 @@ class RadioWidget extends Widget {
         return $values;
     }
 
+/*
     function getJsValueGetter() {
         return '%s.is(":checked").val()';
     }
+    */
+
+    function getJsValueGetter($id='%s') {
+        //return sprintf('%s.val()', $id);
+        return '%s.is(":checked").val()';
+    }
+
+
 }
 
 class RadiobuttonsPlugin extends Plugin {
@@ -309,12 +318,13 @@ class RadiobuttonsPlugin extends Plugin {
         $config = $this->getConfig();
         FormField::$types[$config->get('category')]['radiobutton'] = array(   /* @trans */ 'Radiobuttons', 'RadioField');
     }
-    
-    function uninstall() {
+
+
+    function uninstall(&$errors) {
         global $ost;
         $errors = array();
         $config = $this->getConfig();
-        
+
         $fields = DynamicFormField::objects()->filter(array('type' => 'radiobutton'))->all();
         if(count($fields) > 0){
             switch($config->get('uninstall-method')){
